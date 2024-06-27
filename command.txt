@@ -1,0 +1,18 @@
+1. build image
+vscode right click dockerfile and click build image (named it ros_foxy)
+
+2. build container
+docker run --name avix_container --user=user --env=DISPLAY=host.docker.internal:0 --volume="C:\\:/mnt/c" --restart=no --runtime=runc --network=host -t -d ros_foxy
+# with port passthrough
+docker run --name avix_container_v1 --user=user --env=DISPLAY=host.docker.internal:0 --volume="C:\\:/mnt/c" --restart=no --runtime=runc -p 12345:12345 -t -d ros_foxy_v1
+docker run --gpus all --name avix_container_v3 --user=user --env=DISPLAY=host.docker.internal:0 --volume="C:\\:/mnt/c" --restart=no --runtime=nvidia -p 12345:12345 -t -d ros_foxy_v3
+3. open xLaunch
+
+4. in docker terminal start this: 
+terminator -u&
+
+
+
+# in xLaunch
+install ping
+sudo apt-get install iputils-ping

@@ -1,0 +1,45 @@
+# Change the distro if needed, you can also use a ubuntu image and make your custom ROS install on it.
+FROM nvidia/cuda:11.8.0-devel-ubuntu20.04 
+ARG DEBIAN_FRONTEND=noninteractive
+
+USER root
+
+RUN apt-get update
+
+# ROS related dependency
+# Install ROS 2 Foxy and other dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    sudo \
+    terminator \
+    iproute2 \
+    gedit \
+    lsb-release \
+    wget \
+    nano \
+    ros-foxy-desktop \
+    && apt-get clean
+
+# Debug related dependency (removed when official package is ready)
+RUN apt-get install -y iputils-ping
+
+RUN adduser user
+RUN adduser user sudo
+# Remove password
+RUN passwd -d user
+
+# Switch to user
+USER user
+
+# Create ROS workspace
+RUN mkdir -p /home/user/ros_ws/src
+
+# Copy the local folders to the image
+COPY --chown=user:user test_avix /home/user/test_avix
+COPY --chown=user:user src /home/user/ros_ws/src
+
+# Source ROS setup.bash and build the workspace
+RUN /bin/bash -c "source /opt/ros/foxy/setup.bash && cd /home/user/ros_ws && colcon build"
+
+# Set the default command to launch a bash shell
+CMD ["bash"]
